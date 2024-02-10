@@ -13,7 +13,7 @@
     <nav class="navbar navbar-expand-md fixed-top navbar-shrink py-3 navbar-light" id="mainNav">
         <div class="container"><a class="navbar-brand d-flex align-items-center" href="/static"><span>Kaizntree</span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
-                <ul class="navbar-nav mx-auto"></ul><a class="btn btn-primary shadow" role="button" href="/account/signup">Sign up</a>
+                <ul class="navbar-nav mx-auto"></ul><a class="btn btn-primary shadow" role="button" href="/signup/">Sign up</a>
             </div>
         </div>
     </nav>
@@ -25,8 +25,12 @@
                     <h2 class="display-6 fw-bold mb-5"><span class="underline pb-1"><strong>Login</strong><br></span></h2>
                     <form method="post" data-bs-theme="light">
                         {% csrf_token %}
-                        <div class="mb-3"><input class="shadow form-control" type="email" name="email" placeholder="Email"></div>
-                        <div class="mb-3"><input class="shadow form-control" type="password" name="password" placeholder="Password"></div>
+                        <div class="mb-3">
+                            {{ form.username }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.password }}
+                        </div>
                         <div class="mb-5"><button class="btn btn-primary shadow" type="submit">Log in</button></div>
                     </form>
                     <p class="text-muted"><a href="forgotten-password.html">Forgot your password?</a></p>
