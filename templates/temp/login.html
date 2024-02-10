@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title></title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <link href="https://fonts.googleapis.com/css?family=Inter:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static '/css/styles.css' %}">
+    <script type="javascript" src="{% static '/js/bold-and-dark.js' %}"></script>
+    <script type="javascript" src="{% static '/js/bootstrap.bundle.min.js' %}"></script>
+    <script type="javascript" src="{% static '/js/bootstrap.min.js' %}"></script>
+    <script type="javascript" src="{% static '/js/jquery.min.js' %}"></script>
+    <script type="javascript" src="{% static '/js/script.min.js' %}"></script>
+
+
+</head>
+<body>
+<div class="container">
+
+    <section class="py-5">
+        <div class="container py-5">
+            <div class="row mb-4 mb-lg-5">
+                <div class="col-md-8 col-xl-6 text-center mx-auto">
+                    <h2 class="fw-bold text-success mb-2">Login</h2>
+                    <h2 class="fw-bold">Welcome back!</h2>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-6 col-xl-4">
+                    <div class="card">
+                        <div class="card-body text-center d-flex flex-column align-items-center">
+                            <form method="post">
+                                <div class="mb-3"><input class="form-control" type="email" name="email"
+                                                         placeholder="Email"></div>
+                                <div class="mb-3"><input class="form-control" type="password" name="password1"
+                                                         id="passwrod1" placeholder="Password"></div>
+                                <div class="mb-3">
+                                    <button class="btn btn-primary shadow d-block w-100" type="submit">Log in</button>
+                                </div>
+                                <p class="text-muted">New user? <a href="/account/signup/">Register</a></p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>
