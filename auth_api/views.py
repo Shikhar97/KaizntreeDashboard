@@ -1,13 +1,11 @@
-from django.contrib.auth import logout
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib import auth
 
-from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 

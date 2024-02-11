@@ -1,14 +1,6 @@
 from django.db import models
 
 
-class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-
-
-class Tag(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-
-
 class Item(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
