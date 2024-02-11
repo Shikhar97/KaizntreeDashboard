@@ -10,11 +10,12 @@ class Tag(models.Model):
 
 
 class Item(models.Model):
-    name = models.CharField(max_length=200)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
-    sku = models.CharField(max_length=12, default="NULL")
-    tag = models.CharField(max_length=10, default="NULL")
-    currentStock = models.IntegerField(default=0)
-    availableStock = models.IntegerField(default=0)
+    name = models.CharField(max_length=200)
+    category = models.CharField(max_length=100, default="NULL", unique=True)
+    sku = models.CharField(max_length=100, default="NULL")
+    tag = models.CharField(max_length=100, default="NULL")
+    currentStock = models.FloatField(default=0)
+    availableStock = models.FloatField(default=0)
     status = models.BooleanField(default=False)
