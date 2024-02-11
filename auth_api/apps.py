@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ItemDashboardConfig(AppConfig):
+class AuthApiConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'item_dashboard'
+    name = 'auth_api'

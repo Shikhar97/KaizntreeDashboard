@@ -6,9 +6,9 @@ from django.contrib.auth.models import User
 class SignupForm(UserCreationForm):
     username = forms.EmailField(
         widget=forms.EmailInput(attrs={'class': 'shadow form-control', 'placeholder': 'Email'}))
-    password = forms.CharField(
+    password1 = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'shadow form-control', 'placeholder': 'Password'}))
-    password_confirm = forms.CharField(
+    password2 = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'shadow-sm form-control', 'placeholder': 'Repeat Password'}))
 
     class Meta:
@@ -24,8 +24,8 @@ class SignupForm(UserCreationForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        password = cleaned_data.get('password')
-        password_confirm = cleaned_data.get('password_confirm')
+        password = cleaned_data.get('password1')
+        password_confirm = cleaned_data.get('password2')
 
         # Check if the passwords match
         if password and password_confirm and password != password_confirm:
