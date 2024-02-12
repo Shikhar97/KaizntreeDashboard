@@ -18,11 +18,7 @@ redis_instance = redis.StrictRedis(host='127.0.0.1', port=6379)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def add_stock_item(request):
-    """
 
-    :param request:
-    :return:
-    """
     items_serializer = ItemSerializer(data=request.data)
     if items_serializer.is_valid():
         items_serializer.save()
@@ -33,6 +29,7 @@ def add_stock_item(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def list_stock_item(request, stock_id=None):
+
     query_set = Item.objects.all()
 
     # Filter by date range
@@ -79,12 +76,7 @@ def list_stock_item(request, stock_id=None):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_stock_item(request, stock_id=None):
-    """
 
-    :param request:
-    :param stock_id:
-    :return:
-    """
     item = get_object_or_404(Item, id=stock_id)
     try:
         item.delete()
@@ -96,6 +88,7 @@ def delete_stock_item(request, stock_id=None):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def add_category(request):
+
     categories_serializer = CategorySerializer(data=request.data)
     if categories_serializer.is_valid():
         categories_serializer.save()
@@ -106,6 +99,7 @@ def add_category(request):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_category(request, category_name=None):
+
     category = get_object_or_404(Category, name=category_name)
     try:
         category.delete()

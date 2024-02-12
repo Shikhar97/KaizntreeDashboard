@@ -1,0 +1,259 @@
+openapi: 3.0.0
+info:
+  title: Kaizntree Backend API
+  version: 1.0.0
+  description: API documentation for managing stock items and categories.
+tags:
+  - name: item
+  - name: user
+
+paths:
+  /api/v1/items/add/:
+    post:
+      tags:
+        - item
+      summary: Add Stock Item
+      description: Add a new stock item.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                category:
+                  type: string
+                sku:
+                  type: string
+                tag:
+                  type: string
+                currentStock:
+                  type: number
+                availableStock:
+                  type: number
+                status:
+                  type: boolean
+      responses:
+        '201':
+          description: Stock item created successfully.
+        '400':
+          description: Bad request. Check the request body for errors.
+        '401':
+          description: Unauthorized. User authentication required.
+  /api/v1/items/list/:
+    get:
+      tags:
+        - item
+      summary: List Stock Item
+      description: List stock items with optional filtering.
+      parameters:
+        - name: created_after
+          in: query
+          description: Filter items created after a specific date (YYYY-MM-DD).
+          schema:
+            type: string
+        - name: created_before
+          in: query
+          description: Filter items created before a specific date (YYYY-MM-DD).
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Filter items by status (optional).
+          schema:
+            type: boolean
+        - name: category
+          in: query
+          description: Filter items by category (optional).
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of stock items.
+        '400':
+          description: Bad request. Check the query parameters for errors.
+        '401':
+          description: Unauthorized. User authentication required.
+  /api/v1/items/delete/{stock_id}/:
+    delete:
+      tags:
+        - item
+      summary: Delete Stock Item
+      description: Delete a specific stock item by ID.
+      parameters:
+        - name: stock_id
+          in: path
+          required: true
+          description: ID of the stock item to delete.
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Stock item deleted successfully.
+        '400':
+          description: Bad request. Check the request parameters for errors.
+        '401':
+          description: Unauthorized. User authentication required.
+  /api/v1/items/category/add/:
+    post:
+      tags:
+        - category
+      summary: Add Category
+      description: Add a new category.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Category created successfully.
+        '400':
+          description: Bad request. Check the request body for errors.
+        '401':
+          description: Unauthorized. User authentication required.
+  /api/v1/items/category/delete/{category_name}/:
+    delete:
+      tags:
+        - category
+      summary: Delete Category
+      description: Delete a specific category by name.
+      parameters:
+        - name: category_name
+          in: path
+          required: true
+          description: Name of the category to delete.
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Category deleted successfully.
+        '400':
+          description: Bad request. Check the request parameters for errors.
+        '401':
+          description: Unauthorized. User authentication required.
+
+  /api/v1/auth/register/:
+    post:
+      tags:
+        - user
+      summary: "Register User"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: "User registered successfully."
+        '400':
+          description: "Bad request. Check request body for errors."
+  /api/v1/auth/login/:
+    post:
+      tags:
+        - user
+      summary: "Login User"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: "Login successful."
+        '400':
+          description: "Bad request. Check request body for errors."
+        '401':
+          description: "Unauthorized. Invalid username or password."
+  /api/v1/auth/reset_password/:
+    post:
+      tags:
+        - user
+      summary: "Reset Password"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        '200':
+          description: "Password reset email sent."
+        '400':
+          description: "Bad request. Check request body for errors."
+  /api/v1/auth/reset_password_confirm/{uidb64}/{token}/:
+    get:
+      tags:
+        - user
+      summary: "Confirm Password Reset"
+      parameters:
+        - in: path
+          name: uidb64
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: token
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Password reset confirmed."
+        '401':
+          description: "Unauthorized. Invalid or expired token."
+  /api/v1/auth/reset_password/confirm/:
+    patch:
+      tags:
+        - user
+      summary: "Set New Password"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                new_password:
+                  type: string
+                new_password_confirm:
+                  type: string
+      responses:
+        '200':
+          description: "Password reset successful."
+        '400':
+          description: "Bad request. Check request body for errors."
+  /api/v1/auth/logout/:
+    get:
+      tags:
+        - user
+      summary: "Logout"
+      responses:
+        '200':
+          description: "Logout successful."
+        '401':
+          description: "Unauthorized."
+
