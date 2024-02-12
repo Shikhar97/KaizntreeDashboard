@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 from django.contrib import auth
 
-from auth_api.serializer import RegisterSerializer, LoginSerializer
+from auth_api.serializer import RegisterSerializer, LoginSerializer, PasswordResetSerializer
 
 
 class RegisterUser(generics.GenericAPIView):
@@ -21,29 +21,28 @@ class RegisterUser(generics.GenericAPIView):
 
 
 class LoginUser(generics.GenericAPIView):
+    serializer_class = LoginSerializer
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         login_serializer = LoginSerializer(data=request.data, context={'request': request})
-        login_serializer.is_valid(raise_exception=True)
-        return Response(login_serializer.data, status=200)
+        if login_serializer.is_valid(raise_exception=True):
+            return Response(login_serializer.data, status=status.HTTP_200_OK)
+        return Response(login_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
-def signout(request):
-    auth.logout(request=request)
-    return Response("User logged out.", status=status.HTTP_200_OK)
+class ResetPassword(generics.GenericAPIView):
+    serializer_class = PasswordResetSerializer
+
+    def post(self, request, *args, **kwargs):
+        reset_serializer = PasswordResetSerializer(data=request.data)
+        if reset_serializer.is_valid(raise_exception=True):
+            return Response({'message': 'Password reset email sent.'}, status=status.HTTP_200_OK)
+        return Response(reset_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
-def forgot_password(request):
-    htmly = get_template('account/email.html')
-    d = {'username': request.data['username']}
-    subject, from_email, to = 'Password Reset', 'no-reply@kaizn.com', request.data['username']
-    html_content = htmly.render(d)
-    # 'reset_password_url': "{}?token={}".format(
-    #     instance.request.build_absolute_uri(reverse('password_reset:reset-password-confirm')),
-    #     reset_password_token.key)
-    msg = EmailMultiAlternatives(subject, html_content, from_email, [to])
-    msg.attach_alternative(html_content, "text/html")
-    msg.send()
-    return Response({'message': 'Password reset email sent.'}, status=status.HTTP_200_OK)
+class Logout(generics.GenericAPIView):
+
+    def get(self, request):
+        request.user.auth_token.delete()
+        auth.logout(request)
+        return Response("Logout successful", status=status.HTTP_200_OK)
