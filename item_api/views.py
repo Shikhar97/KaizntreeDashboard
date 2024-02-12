@@ -1,14 +1,17 @@
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 
-from .models import Item
-from .serializer import ItemSerializer
+from .models import Item, Category
+from .serializer import ItemSerializer, CategorySerializer
 
 from django.shortcuts import get_object_or_404
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_stock_item(request):
     items_serializer = ItemSerializer(data=request.data)
     if items_serializer.is_valid():
@@ -18,6 +21,7 @@ def add_stock_item(request):
 
 
 @api_view(['GET', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_stock_item(request, stock_id):
     item = get_object_or_404(Item, id=stock_id)
     try:
@@ -29,6 +33,7 @@ def delete_stock_item(request, stock_id):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def list_stock_item(request, stock_id=None):
     query_set = Item.objects.all()
 
@@ -51,6 +56,31 @@ def list_stock_item(request, stock_id=None):
         item = get_object_or_404(query_set, id=stock_id)
         items_serializer = ItemSerializer(item)
     else:
-        items_serializer = ItemSerializer(query_set, many=True)
+        paginator = PageNumberPagination()
+        paginator.page_size = 5
+        queryset = paginator.paginate_queryset(query_set, request)
+        items_serializer = ItemSerializer(queryset, many=True)
+        return paginator.get_paginated_response(items_serializer.data)
 
     return Response(items_serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_category(request):
+    categories_serializer = CategorySerializer(data=request.data)
+    if categories_serializer.is_valid():
+        categories_serializer.save()
+        return Response(categories_serializer.data, status=status.HTTP_201_CREATED)
+    return Response({'message': categories_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_category(request, category_name):
+    category = get_object_or_404(Category, name=category_name)
+    try:
+        category.delete()
+        return Response({'message': 'Category was deleted successfully!'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'message': category.errors}, status=status.HTTP_400_BAD_REQUEST)
