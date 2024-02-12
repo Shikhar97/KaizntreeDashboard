@@ -22,16 +22,19 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.schemas import get_schema_view
 from django.views.generic import TemplateView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('auth_api.urls')),
-    path('items/', include('item_api.urls')),
-    path('api_docs/',
+
+    path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    path('api/v1/auth/', include('auth_api.urls')),
+    path('api/v1/items/', include('item_api.urls')),
+    path('v1/api_docs/',
          TemplateView.as_view(template_name='api_doc.html', extra_context={'schema_url': 'api_schema'}),
          name='swagger-ui'),
-    path('api_schema/', get_schema_view(title='Kaizntree APIs', description='API documentation'),
-         name='api-schema'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
