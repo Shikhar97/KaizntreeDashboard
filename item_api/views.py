@@ -1,7 +1,8 @@
+from datetime import datetime
+
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 
 from .models import Item, Category
@@ -34,10 +35,13 @@ def add_stock_item(request):
 def list_stock_item(request, stock_id=None):
     query_set = Item.objects.all()
 
-    # Filter by tag
-    tag = request.GET.get('tag')
-    if tag:
-        query_set = query_set.filter(tag=tag)
+    # Filter by date range
+    created_after = request.GET.get('created_after')
+    created_before = request.GET.get('created_before')
+    if created_after and created_before:
+        created_after = datetime.strptime(created_after, "%Y-%m-%d")
+        created_before = datetime.strptime(created_before, "%Y-%m-%d")
+        query_set = query_set.filter(createdAt__gte=created_after, createdAt__lte=created_before)
 
     # Filter by stock status
     stock_status = request.GET.get('status')
@@ -49,6 +53,7 @@ def list_stock_item(request, stock_id=None):
     if category:
         query_set = query_set.filter(category=category)
 
+    # Caching results
     if stock_id:
         item = get_object_or_404(query_set, id=stock_id)
         items_serializer = ItemSerializer(item)
@@ -57,6 +62,7 @@ def list_stock_item(request, stock_id=None):
             return Response(cache.get(cache_key), status=status.HTTP_200_OK)
 
         cache.set(cache_key, items_serializer.data, timeout=(60 * 5))
+        return Response(items_serializer.data, status=status.HTTP_200_OK)
     else:
         paginator = PageNumberPagination()
         paginator.page_size = 5
@@ -64,12 +70,10 @@ def list_stock_item(request, stock_id=None):
         items_serializer = ItemSerializer(queryset, many=True)
         cache_key = f'item:{items_serializer.data}'
         if cache_key in cache:
-            return Response(cache.get(cache_key), status=status.HTTP_200_OK)
+            return paginator.get_paginated_response(cache.get(cache_key))
 
         cache.set(cache_key, items_serializer.data, timeout=(60 * 5))
         return paginator.get_paginated_response(items_serializer.data)
-
-    return Response(items_serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['DELETE'])
