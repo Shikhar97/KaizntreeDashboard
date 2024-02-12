@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 
 from django.contrib.auth.models import User
 
-from item_api.models import Item
+from item_api.models import Item, Category
 
 
 class ItemApiTests(APITestCase):
@@ -15,9 +15,9 @@ class ItemApiTests(APITestCase):
         """
 
         self.new_user = User.objects.create_user(username='setupuser@gmail.com', password='pass$12345')
-
+        self.category = Category.objects.create(name='Food')
         self.item = Item.objects.create(
-            sku='Stock-1', name='stock1', category="Electronics",
+            sku='Stock-1', name='stock1', category=self.category,
             currentStock=69, availableStock=100, tag="New Arrival"
         )
         url = reverse('login')
@@ -91,7 +91,7 @@ class ItemApiTests(APITestCase):
         data = {
             'sku': 'Stock-2',
             'name': 'Stock2',
-            'category': 'Food',
+            'category': 1, # Food
             'tags': 'Fresh',
             'currentStock': 789.56,
             'availableStock': 1500
