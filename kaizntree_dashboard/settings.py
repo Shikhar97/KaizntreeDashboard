@@ -65,6 +65,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config.get('EMAIL_HOST_PASSWORD')
 
+PASSWORD_RESET_TIMEOUT = 86400
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
