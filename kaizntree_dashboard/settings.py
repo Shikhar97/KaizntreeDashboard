@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
+from dotenv import dotenv_values
 from pathlib import Path
 from datetime import timedelta
 
@@ -18,12 +19,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
+config = dotenv_values()
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+1cxmnj6w_sy*p&h2mmeq74#x^3c3sebfy9=tuwu)qm#qm*!+_'
+SECRET_KEY = config.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config.get('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -44,14 +45,15 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_swagger',
     'rest_framework_simplejwt.token_blacklist',
+    'django_rest_passwordreset',
 
 ]
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = ""
+EMAIL_HOST_USER = config.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config.get('EMAIL_HOST_PASSWORD')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -94,9 +96,9 @@ WSGI_APPLICATION = 'kaizntree_dashboard.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'kaizn',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
+        'NAME': config.get('DB_NAME'),
+        'USER': config.get('USER'),
+        'PASSWORD': config.get('PASSWORD'),
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
@@ -151,6 +153,14 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+    }
 }
 
 SIMPLE_JWT = {
