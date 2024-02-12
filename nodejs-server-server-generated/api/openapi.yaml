@@ -1,0 +1,315 @@
+openapi: 3.0.0
+info:
+  title: Kaizntree Backend API
+  description: API documentation for managing stock items and categories.
+  version: 1.0.0
+servers:
+- url: /
+tags:
+- name: item
+- name: user
+- name: category
+paths:
+  /api/v1/items/add/:
+    post:
+      tags:
+      - item
+      summary: Add Stock Item
+      description: Add a new stock item.
+      operationId: apiV1ItemsAddPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/items_add_body'
+        required: true
+      responses:
+        "201":
+          description: Stock item created successfully.
+        "400":
+          description: Bad request. Check the request body for errors.
+        "401":
+          description: Unauthorized. User authentication required.
+      x-swagger-router-controller: Item
+  /api/v1/items/list/:
+    get:
+      tags:
+      - item
+      summary: List Stock Item
+      description: List stock items with optional filtering.
+      operationId: apiV1ItemsListGET
+      parameters:
+      - name: created_after
+        in: query
+        description: Filter items created after a specific date (YYYY-MM-DD).
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: created_before
+        in: query
+        description: Filter items created before a specific date (YYYY-MM-DD).
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: Filter items by status (optional).
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: category
+        in: query
+        description: Filter items by category (optional).
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: List of stock items.
+        "400":
+          description: Bad request. Check the query parameters for errors.
+        "401":
+          description: Unauthorized. User authentication required.
+      x-swagger-router-controller: Item
+  /api/v1/items/delete/{stock_id}/:
+    delete:
+      tags:
+      - item
+      summary: Delete Stock Item
+      description: Delete a specific stock item by ID.
+      operationId: apiV1ItemsDeleteStock_idDELETE
+      parameters:
+      - name: stock_id
+        in: path
+        description: ID of the stock item to delete.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: Stock item deleted successfully.
+        "400":
+          description: Bad request. Check the request parameters for errors.
+        "401":
+          description: Unauthorized. User authentication required.
+      x-swagger-router-controller: Item
+  /api/v1/items/category/add/:
+    post:
+      tags:
+      - category
+      summary: Add Category
+      description: Add a new category.
+      operationId: apiV1ItemsCategoryAddPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/category_add_body'
+        required: true
+      responses:
+        "201":
+          description: Category created successfully.
+        "400":
+          description: Bad request. Check the request body for errors.
+        "401":
+          description: Unauthorized. User authentication required.
+      x-swagger-router-controller: Category
+  /api/v1/items/category/delete/{category_name}/:
+    delete:
+      tags:
+      - category
+      summary: Delete Category
+      description: Delete a specific category by name.
+      operationId: apiV1ItemsCategoryDeleteCategory_nameDELETE
+      parameters:
+      - name: category_name
+        in: path
+        description: Name of the category to delete.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Category deleted successfully.
+        "400":
+          description: Bad request. Check the request parameters for errors.
+        "401":
+          description: Unauthorized. User authentication required.
+      x-swagger-router-controller: Category
+  /api/v1/auth/register/:
+    post:
+      tags:
+      - user
+      summary: Register User
+      operationId: apiV1AuthRegisterPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/auth_register_body'
+        required: true
+      responses:
+        "201":
+          description: User registered successfully.
+        "400":
+          description: Bad request. Check request body for errors.
+      x-swagger-router-controller: User
+  /api/v1/auth/login/:
+    post:
+      tags:
+      - user
+      summary: Login User
+      operationId: apiV1AuthLoginPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/auth_login_body'
+        required: true
+      responses:
+        "200":
+          description: Login successful.
+        "400":
+          description: Bad request. Check request body for errors.
+        "401":
+          description: Unauthorized. Invalid username or password.
+      x-swagger-router-controller: User
+  /api/v1/auth/reset_password/:
+    post:
+      tags:
+      - user
+      summary: Reset Password
+      operationId: apiV1AuthReset_passwordPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/auth_reset_password_body'
+        required: true
+      responses:
+        "200":
+          description: Password reset email sent.
+        "400":
+          description: Bad request. Check request body for errors.
+      x-swagger-router-controller: User
+  /api/v1/auth/reset_password_confirm/{uidb64}/{token}/:
+    get:
+      tags:
+      - user
+      summary: Confirm Password Reset
+      operationId: apiV1AuthReset_password_confirmUidb64TokenGET
+      parameters:
+      - name: uidb64
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: token
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Password reset confirmed.
+        "401":
+          description: Unauthorized. Invalid or expired token.
+      x-swagger-router-controller: User
+  /api/v1/auth/reset_password/confirm/:
+    patch:
+      tags:
+      - user
+      summary: Set New Password
+      operationId: apiV1AuthReset_passwordConfirmPATCH
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/reset_password_confirm_body'
+        required: true
+      responses:
+        "200":
+          description: Password reset successful.
+        "400":
+          description: Bad request. Check request body for errors.
+      x-swagger-router-controller: User
+  /api/v1/auth/logout/:
+    get:
+      tags:
+      - user
+      summary: Logout
+      operationId: apiV1AuthLogoutGET
+      responses:
+        "200":
+          description: Logout successful.
+        "401":
+          description: Unauthorized.
+      x-swagger-router-controller: User
+components:
+  schemas:
+    items_add_body:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        sku:
+          type: string
+        tag:
+          type: string
+        currentStock:
+          type: number
+        availableStock:
+          type: number
+        status:
+          type: boolean
+    category_add_body:
+      type: object
+      properties:
+        name:
+          type: string
+    auth_register_body:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    auth_login_body:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    auth_reset_password_body:
+      type: object
+      properties:
+        email:
+          type: string
+    reset_password_confirm_body:
+      type: object
+      properties:
+        new_password:
+          type: string
+        new_password_confirm:
+          type: string
