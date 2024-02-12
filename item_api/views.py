@@ -26,7 +26,7 @@ def delete_stock_item(request, stock_id):
     item = get_object_or_404(Item, id=stock_id)
     try:
         item.delete()
-        return Response({'message': 'Item was deleted successfully!'}, status=status.HTTP_200_OK)
+        return Response({'message': 'Item was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
     except Exception as e:
         print(str(e))
         return Response({'message': item.errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -81,6 +81,6 @@ def delete_category(request, category_name):
     category = get_object_or_404(Category, name=category_name)
     try:
         category.delete()
-        return Response({'message': 'Category was deleted successfully!'}, status=status.HTTP_200_OK)
+        return Response({'message': 'Category was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
     except Exception as e:
         return Response({'message': category.errors}, status=status.HTTP_400_BAD_REQUEST)
