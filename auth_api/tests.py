@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from auth_api.models import User
+from django.contrib.auth.models import User
 
 
 class AuthApiTests(APITestCase):
@@ -12,7 +12,7 @@ class AuthApiTests(APITestCase):
         """
         url = reverse('register')
         data = {
-            'email': 'testcase1@gmail.com',
+            'username': 'testcase1@gmail.com',
             'password1': 'pass$12345',
             'password2': 'pass$12345'
         }
@@ -20,7 +20,7 @@ class AuthApiTests(APITestCase):
         response_data = response.json()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue('username' in response_data)
-        self.assertEqual(response_data['username'], data['email'])
+        self.assertEqual(response_data['username'], data['username'])
 
         # Ensure password is not returned
         self.assertFalse('password' in response_data)
@@ -40,7 +40,7 @@ class AuthApiTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertTrue('username' in response_data)
-        self.assertEqual(response_data['username'], data['email'])
+        self.assertEqual(response_data['username'], data['username'])
 
         self.assertTrue('access_token' in response_data)
         self.assertTrue('refresh_token' in response_data)
@@ -59,7 +59,7 @@ class AuthApiTests(APITestCase):
         }
         response = self.client.post(url, data, format='json')
         response_data = response.json()
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_login_fail(self):
         """
