@@ -6,25 +6,51 @@ This project is a web application designed to manage inventory items. It utilize
 
 Follow these steps to set up the project environment and run the application:
 
-1. **Python Installation**: Ensure Python is installed on your system and added to PATH during installation.
+**Python Installation**: Ensure Python is installed on your system and added to PATH during installation.
 
-2. **Verify Python Installation**: Confirm Python installation by running `python --version` in the terminal.
+**Verify Python Installation**: Confirm Python installation by running `python --version` in the terminal.
 
-3. **PostgreSQL Installation**: Download and install PostgreSQL from the official website.
+**Python Dependencies**: Install all the requirements using the following commands
 
-4. **Set PostgreSQL Password**: Set a password for the default PostgreSQL user during installation.
+        python3.10 -m pip install -r requirements.txt
+        python3.10 -m pip install django-filter
+        python3.10 -m pip install django-cors-headers
+        python3.10 -m pip install django-rest-swagger
+        python3.10 -m pip install django-rest-passwordreset
+        python3.10 -m pip install psycopg2-binary
+        python3.10 -m pip install whitenoise
 
-5. **Python Dependencies**: Install all the requirements using `python3.10 -m pip install -r requirements.txt`.
+**PostgreSQL Installation**: Download and install PostgreSQL from the official website.
 
-6. **Create Database**: Create a PostgreSQL database named `kaizn`.
+        sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+        wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+        sudo apt install postgresql postgresql-contrib
+        sudo systemctl start postgresql.service
+        sudo systemctl enable postgresql.service
 
-10. **Run Migrations**: Run database migrations using `python3.10 manage.py makemigrations` and `python3.10 manage.py migrate`.
+**Create Database**: Create a PostgreSQL database named `kaizn`.
 
-11. **Run Application**: Start the Django development server with `python3.10 manage.py runserver`.
+        CREATE DATABASE kaizn;
+
+
+**Redis Server**: Install redis-server and start the server
+        
+        curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+        sudo apt-get install redis
+        redis-server --port 6380 &
+
+
+**Run Migrations**: Run database migrations using 
+
+        python3.10 manage.py makemigrations
+        python3.10 manage.py migrate
+
+**Run Application**: Start the Django development server with `python3.10 manage.py runserver`.
 
 ## API Documentation
 
-The API endpoints are documented using Swagger. You can access the interactive endpoints documentation [here](http://localhost:8000/v1/api_docs/)
+The API endpoints are documented using Swagger. You can access the interactive endpoints documentation [here](http://34.228.169.188:8000/v1/api_docs/)
 
 ## Frontend Mockups
 
@@ -39,8 +65,7 @@ To test the API endpoints, use the following commands:
 
 ## Technological Choices
 
-- **PostgreSQL**: Chosen for its robustness in handling complex data relationships and queries.
-   
+- **PostgreSQL**: Chosen for its robustness in handling complex data relationships and queries. 
 - **JWT for Authentication**: JWT tokens are used for authentication due to their compactness, stateless nature, and secure digital signatures.
 
 ## Frontend URL
