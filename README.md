@@ -50,7 +50,7 @@ Follow these steps to set up the project environment and run the application:
 
 ## API Documentation
 
-The API endpoints are documented using Swagger. You can access the interactive endpoints documentation [here](http://34.228.169.188:8000/v1/api_docs/)
+The API endpoints are documented using Swagger. You can access the interactive endpoints documentation [here](http://34.228.169.188:8080/docs/)
 
 ## Frontend Mockups
 
